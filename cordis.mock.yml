@@ -1,0 +1,16 @@
+- insert:
+    - id: diantou-meeting-recap
+      name: ./meeting-recap-plugin/index.mjs
+      config:
+        approvalMode: ask
+        webhookEnv: FEISHU_CLASSROOM_MOCK_WEBHOOK_URL
+        allowLoopback: true
+        asrCli: !!js process.env.MEETING_ASR_CLI
+        asrProvider: !!js process.env.MEETING_ASR_PROVIDER
+- id: directory-picker
+  disabled: true
+- insert:
+    - id: directory-picker-browse
+      name: '@deepseek-ai/dsh-host-directory-picker-browse'
+    - id: ui-directory-picker-browse
+      name: '@deepseek-ai/dsh-client-ui-directory-picker-browse'
