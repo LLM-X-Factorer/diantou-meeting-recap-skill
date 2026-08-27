@@ -6,6 +6,8 @@
 
 输入已脱敏的会议逐字稿，或经过授权的录音、视频；输出会议复盘 Markdown、PDF 和飞书卡片。PDF 和卡片都从同一份 Markdown 生成，发送卡片前必须人工确认。
 
+当前版本：[`v0.1.0`](https://github.com/LLM-X-Factorer/diantou-meeting-recap-skill/releases/tag/v0.1.0)
+
 ## 功能
 
 - 读取 `.md`、`.txt` 逐字稿
@@ -200,6 +202,7 @@ docs/                        设计说明和练习
 - [代码运行过程](docs/code-walkthrough.md)
 - [音视频接入说明](docs/media-adapter.md)
 - [修改练习](docs/follow-up-exercises.md)
+- [版本记录](CHANGELOG.md)
 
 ## 开发
 

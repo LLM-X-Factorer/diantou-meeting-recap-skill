@@ -5,6 +5,14 @@
   "description": "A commented DeepSeek Harness skill that turns a sanitized meeting transcript into a reviewable recap, PDF and Feishu card.",
   "type": "module",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LLM-X-Factorer/diantou-meeting-recap-skill.git"
+  },
+  "bugs": {
+    "url": "https://github.com/LLM-X-Factorer/diantou-meeting-recap-skill/issues"
+  },
+  "homepage": "https://github.com/LLM-X-Factorer/diantou-meeting-recap-skill#readme",
   "engines": {
     "node": ">=20"
   },
