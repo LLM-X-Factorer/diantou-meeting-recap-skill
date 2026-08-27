@@ -18,7 +18,9 @@
 
 ## 环境要求
 
+- Git
 - Node.js 20 或更高版本
+- macOS 或 Linux；Windows 建议在 WSL 中运行
 - DeepSeek Harness `v0.1.1-rc.2`
 - 生成 PDF：`weasyprint`
 - 处理音视频：`ffmpeg`、`ffprobe`
@@ -29,26 +31,82 @@
 npm run preflight
 ```
 
-## 快速开始
+## 第一次使用：先跑通仓库自带的例子
+
+这一部分暂时不接模型。先用仓库自带的虚构逐字稿，确认代码能在你的电脑上生成文件。
+
+### 1. 下载代码
+
+打开终端，逐行运行：
 
 ```bash
 git clone https://github.com/LLM-X-Factorer/diantou-meeting-recap-skill.git
 cd diantou-meeting-recap-skill
+```
+
+第二行会让终端进入刚下载的仓库。后面的命令都要在这个目录里运行。
+
+### 2. 安装依赖
+
+```bash
 npm ci
-npm run check
+```
+
+这个仓库没有需要额外下载的 JavaScript 依赖，但这条命令会检查 `package-lock.json` 是否正常。看到 `found 0 vulnerabilities` 就可以继续。
+
+### 3. 检查本机环境
+
+```bash
+npm run preflight
+```
+
+必须项通过时会显示 `PASS`。`weasyprint`、`ffmpeg` 和 `ffprobe` 是可选项，安装后显示 `PASS`，没有安装则显示 `SKIP`：
+
+- 没有 `weasyprint`：暂时不能生成 PDF。
+- 没有 `ffmpeg` 或 `ffprobe`：暂时不能处理录音和视频。
+- 只练习文字逐字稿时，可以先继续。
+
+### 4. 运行测试
+
+```bash
+npm test
+```
+
+成功时，终端结尾会显示：
+
+```text
+pass 11
+fail 0
+```
+
+如果 `fail` 不是 `0`，先不要进入 Harness。向上找到第一条带 `✖` 的测试，它通常会说明缺少哪个文件或哪一步没有按预期工作。
+
+### 5. 生成示例文件
+
+```bash
 npm run demo
 ```
 
-`npm run demo` 使用仓库内的虚构逐字稿，不调用模型，也不会发送消息。结果保存在：
+这条命令会读取 [示例逐字稿](examples/input/sample-meeting.md)，结果保存在 `runtime/demo/`：
 
-```text
-runtime/demo/normalized-transcript.md
-runtime/demo/meeting-recap.md
-runtime/demo/meeting-recap.pdf
-runtime/demo/feishu-card.json
+| 文件 | 内容 |
+| --- | --- |
+| `normalized-transcript.md` | 整理过格式的逐字稿 |
+| `meeting-recap.md` | 会议主题、决定、待办和待确认问题 |
+| `meeting-recap.pdf` | 与 Markdown 内容相同的 PDF |
+| `feishu-card.json` | 尚未发送的飞书卡片数据 |
+
+先打开 `runtime/demo/meeting-recap.md`，检查“第一批体验用户邀请”是否仍然写着负责人待确认。再看终端输出的最后一项：
+
+```json
+"sent": false
 ```
 
-如果没有安装 `weasyprint`，PDF 步骤会跳过，其他文件仍可生成。
+它表示这次只生成了文件，没有发送消息。这个过程中不会调用模型，也不会上传逐字稿。
+
+如果没有安装 `weasyprint`，示例会跳过 PDF，其他三个文件仍可生成。
+
+完成这一步后，再继续下面的 Harness 用法。
 
 ## 在 DeepSeek Harness 中使用
 
@@ -102,6 +160,17 @@ export FEISHU_CLASSROOM_MOCK_WEBHOOK_URL='http://127.0.0.1:3099/open-apis/bot/v2
 
 Harness 发送卡片前会要求人工批准。测试收件箱成功接收后，才会生成 `runtime/feishu-receipt.json`。
 
+## 常见问题
+
+| 现象 | 处理方法 |
+| --- | --- |
+| `command not found: git` | 先安装 Git，再重新运行下载命令。 |
+| `command not found: npm` | 先安装 Node.js 20 或更高版本，再重新打开终端。 |
+| `preflight` 显示 `SKIP optional PDF route` | 没有安装 `weasyprint`。可以先看 Markdown 和卡片，或者安装后重新运行。 |
+| 输入 `/meeting` 后没有出现 `meeting-recap` | 确认执行过 `source scripts/harness-env.sh`，并在网页中选择了当前仓库。 |
+| 终端提示端口已被占用 | 把启动命令中的 `--port 3080` 换成其他端口，并用新端口打开网页。 |
+| 第一次运行 `npx` 很久没有输出 | Harness 正在下载依赖。等待完成后，下一次启动会更快。 |
+
 ## 配置
 
 | 名称 | 用途 |
@@ -144,6 +213,7 @@ Pull Request 会在 Node.js 20 环境中运行完整检查。修改 Tool、输�
 ## 当前限制
 
 - 只在 DeepSeek Harness `v0.1.1-rc.2` 上验证过。
+- 没有在原生 Windows 终端中验证过。
 - 音视频识别质量取决于接入的转写服务。
 - 公开仓库没有验证真实飞书群发送。
 - 自动测试通过不代表它已经适合正式生产环境。
